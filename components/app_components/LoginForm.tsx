@@ -18,6 +18,9 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Link from "next/link";
 import UseGoogleButton from "./UseGoogleButton";
 import UseGithubButton from "./UseGithubButton";
+import {signIn} from "next-auth/react"
+import {useRouter} from "next/navigation"
+import { useToast } from "../ui/use-toast";
 
 const FormSchema = z.object({
   email: z.string().min(1, "Email is required").email("Email is invalid"),
@@ -28,12 +31,31 @@ const FormSchema = z.object({
 });
 
 export default function SignInForm() {
+  
+  const router = useRouter()
+  const {toast} = useToast()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    alert(data.email);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const signInData = await signIn("credentials" , {
+      email : data.email,
+      password : data.password,
+      redirect : false,
+    })
+    
+    if(signInData?.error){
+      toast({
+        title: "Error",
+        description: "Oops! Something went wrong",
+        variant : "destructive"
+      })
+    }
+    else{
+      router.push("/home")
+    }
   }
 
   return (

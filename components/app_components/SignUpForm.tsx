@@ -18,6 +18,8 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Link from "next/link";
 import UseGithubButton from "./UseGithubButton";
 import UseGoogleButton from "./UseGoogleButton";
+import { useRouter } from "next/navigation"
+import { useToast } from "../ui/use-toast";
 
 const FormSchema = z.object({
   username: z.string().min(1, "Username is required").max(50),
@@ -37,16 +39,38 @@ const FormSchema = z.object({
 })
 
 export default function SignUpForm() {
+  const router = useRouter()
+  const {toast} = useToast()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    alert(data.email);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const response = await fetch("/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      })
+    })
+    if(response.ok){
+      router.push("/login")
+    } else{
+      toast({
+        title: "Error!",
+        description: "Email or Username already exists",
+        variant : "destructive"
+      })
+    }
   }
 
   return (
-    <Card className="bg-black mt-12 border border-white w-[600px] p-12">
+    <Card className="bg-black mt-12 border border-white w-[600px] p-12 md:scale-90">
       <CardHeader className="space-y-3">
         <CardTitle className="text-2xl text-white">
           Create a new account to get started
