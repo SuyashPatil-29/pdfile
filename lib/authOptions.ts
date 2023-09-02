@@ -1,5 +1,9 @@
 import { NextAuthOptions } from "next-auth";
+
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./prismadb";
 import { compare } from "bcrypt";
@@ -35,9 +39,12 @@ export const authOptions: NextAuthOptions = {
         return null
        }
 
-       const passwordMatch = await compare(credentials.password, existingUser.password)
-       if(!passwordMatch){
-        return null
+       if(existingUser.password){
+         const passwordMatch = await compare(credentials.password, existingUser.password)
+         
+         if(!passwordMatch){
+          return null
+         }
        }
 
        return {
@@ -46,6 +53,14 @@ export const authOptions: NextAuthOptions = {
         username: existingUser.username,
        }
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!
     }),
   ],
   callbacks : {

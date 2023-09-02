@@ -18,7 +18,7 @@ export default function Home() {
         <h1 className="text-[70px] bg-gradient-to-r from-pink-500 tracking-wide via-yellow-500 to-purple-500 bg-clip-text text-transparent">
           WELCOME TO PDFILE
         </h1>
-        <h1 className="text-[40px] bg-gradient-to-r from-amber-200 tracking-wide via-purple-700 to-orange-400 bg-clip-text text-transparent" >TALK TO YOUR PDF</h1>
+        <h1 className="text-[40px] bg-gradient-to-r from-green-300 tracking-wide to-yellow-500 bg-clip-text text-transparent" >TALK TO YOUR PDF</h1>
         <li className=" text-white text-xl tracking-wide mt-[40px] mb-2">
           Ask questions and get answers tailoured to your PDF
         </li>

@@ -1,13 +1,18 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Button } from "../ui/button";
+import { signIn } from "next-auth/react";
 
 interface UseGoogleButtonProps {
-  children: string;
+  children: ReactNode;
+}
+
+const logInWithGoogle = () => {
+  signIn("google", { callbackUrl: "http://localhost:3000/home" });
 }
 
 const UseGoogleButton = ({ children }: UseGoogleButtonProps) => {
   return (
-    <Button variant="outline">
+    <Button variant="outline" onClick={logInWithGoogle} className="w-full">
       <svg role="img" viewBox="0 0 24 24" className="mr-2 h-6 w-6">
         <path
           fill="currentColor"

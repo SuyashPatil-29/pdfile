@@ -15,7 +15,7 @@ async function HomePage() {
   return (
     <div className='bg-black h-screen w-screen'>
         <Navbar />
-        <h1 className='text-white text-center text-[40px] uppercase'>WELCOME {session?.user.username} TALK TO YOUR PDF</h1>
+        <h1 className='text-white text-center text-[40px] uppercase'>WELCOME {session?.user.username || session?.user.name} TALK TO YOUR PDF</h1>
     </div>
   )
 }

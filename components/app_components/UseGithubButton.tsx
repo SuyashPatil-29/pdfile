@@ -1,13 +1,19 @@
 import React from "react";
 import { Button } from "../ui/button";
+import { signIn } from "next-auth/react";
 
 interface UseGithubButtonProps {
   children: string;
 }
 
+const logInWithGithub = () =>{
+  signIn("github", { callbackUrl: "http://localhost:3000/home" });
+}
+
+
 const UseGithubButton = ({ children }: UseGithubButtonProps) => {
   return (
-    <Button variant="outline">
+    <Button variant="outline" onClick={logInWithGithub}>
       <svg viewBox="0 0 438.549 438.549" className="mr-2 h-6 w-6">
         <path
           fill="currentColor"

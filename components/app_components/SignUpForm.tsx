@@ -20,6 +20,7 @@ import UseGithubButton from "./UseGithubButton";
 import UseGoogleButton from "./UseGoogleButton";
 import { useRouter } from "next/navigation"
 import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
 
 const FormSchema = z.object({
   username: z.string().min(1, "Username is required").max(50),
@@ -60,12 +61,16 @@ export default function SignUpForm() {
     })
     if(response.ok){
       router.push("/login")
-    } else{
+    } else {
+      const responseData = await response.json();
+      const errorMessage = responseData.message;
+
       toast({
         title: "Error!",
-        description: "Email or Username already exists",
-        variant : "destructive"
-      })
+        description: errorMessage,
+        variant: "destructive",
+        action: <ToastAction altText="Login"><Link href="/login">Login</Link></ToastAction>,
+      });
     }
   }
 
