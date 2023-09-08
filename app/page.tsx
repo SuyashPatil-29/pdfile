@@ -13,9 +13,10 @@ export default function Home() {
   return (
     <div
       className={` ${BebasNeue.className} min-h-screen min-w-screen flex items-center justify-around bg-black pl-10`}
+      style={{backgroundImage: "url(/assets/blue-purple-1.svg)", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
     >
       <div>
-        <h1 className="text-[70px] bg-gradient-to-r from-pink-500 tracking-wide via-yellow-500 to-purple-500 bg-clip-text text-transparent">
+        <h1 className="text-[70px] bg-gradient-to-r from-pink-500 tracking-wide via-yellow-500 to-purple-500 bg-clip-text text-transparent cursor-crosshair">
           WELCOME TO PDFILE
         </h1>
         <h1 className="text-[40px] bg-gradient-to-r from-green-300 tracking-wide to-yellow-500 bg-clip-text text-transparent" >TALK TO YOUR PDF</h1>
