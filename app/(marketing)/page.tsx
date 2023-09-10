@@ -12,7 +12,7 @@ const BebasNeue = Alfa_Slab_One({
 export default function Home() {
   return (
     <div
-      className={` ${BebasNeue.className} min-h-screen min-w-screen flex items-center justify-around bg-black pl-10`}
+      className={` ${BebasNeue.className} h-full w-full flex items-center justify-around bg-black pl-10`}
       style={{backgroundImage: "url(/assets/blue-purple-1.svg)", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
     >
       <div>
@@ -35,7 +35,7 @@ export default function Home() {
               Get Started
             </Button>
           </Link>
-          <Link href="/login">
+          <Link href="/signin">
             <Button className="bg-white text-black text-xl rounded-md px-[30px] py-[25px] mt-[40px] hover:bg-white hover:scale-110 transition duration-200 ease-in-out">
               Login
             </Button>

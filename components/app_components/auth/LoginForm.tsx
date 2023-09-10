@@ -14,32 +14,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "../../ui/card";
 import Link from "next/link";
-import UseGithubButton from "./UseGithubButton";
 import UseGoogleButton from "./UseGoogleButton";
-import { useRouter } from "next/navigation"
-import { useToast } from "../ui/use-toast";
-import { ToastAction } from "../ui/toast";
+import UseGithubButton from "./UseGithubButton";
+import {signIn} from "next-auth/react"
+import {useRouter} from "next/navigation"
+import { useToast } from "../../ui/use-toast";
 
 const FormSchema = z.object({
-  username: z.string().min(1, "Username is required").max(50),
   email: z.string().min(1, "Email is required").email("Email is invalid"),
   password: z
     .string()
     .min(1, "Password is required")
     .min(8, "Password must be atleast 8 characters"),
-  confirmPassword: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must be atleast 8 characters"),
-})
-.refine((data)=> data.password === data.confirmPassword, {
-  path: ["confirmPassword"],
-  message: "Passwords do not match"
-})
+});
 
-export default function SignUpForm() {
+export default function SignInForm() {
+  
   const router = useRouter()
   const {toast} = useToast()
 
@@ -48,64 +40,37 @@ export default function SignUpForm() {
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const response = await fetch("/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      })
+    const signInData = await signIn("credentials" , {
+      email : data.email,
+      password : data.password,
+      redirect : false,
     })
-    if(response.ok){
-      router.push("/login")
-    } else {
-      const responseData = await response.json();
-      const errorMessage = responseData.message;
-
+    
+    if(signInData?.error){
       toast({
-        title: "Error!",
-        description: errorMessage,
-        variant: "destructive",
-        action: <ToastAction altText="Login"><Link href="/login">Login</Link></ToastAction>,
-      });
+        title: "Error",
+        description: "Oops! Something went wrong",
+        variant : "destructive"
+      })
+    }
+    else{
+      router.push("/dashboard")
     }
   }
 
   return (
-    <Card className="bg-black mt-12 border border-white w-[600px] p-12 md:scale-90">
+    <Card className="bg-black border mt-12 border-white w-[600px] p-12">
       <CardHeader className="space-y-3">
         <CardTitle className="text-2xl text-white">
-          Create a new account to get started
+          Login to your account
         </CardTitle>
         <CardDescription className="text-white">
-          Enter your credentials below to create a new account
+          Enter your credentials below to login
         </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="John Doe"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="email"
@@ -141,29 +106,9 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">
-                    Confirm Password
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Re-enter Password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
           <Button className="w-full mt-6" type="submit">
-            Sign Up
+            Login
           </Button>
         </form>
       </Form>
@@ -174,11 +119,11 @@ export default function SignUpForm() {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-white bg-black">
-            Or signup with
+            Or login with
           </span>
         </div>
       </div>
-
+    
       <div className="grid grid-cols-2 gap-6">
         <UseGithubButton>Github</UseGithubButton>
         <UseGoogleButton>Google</UseGoogleButton>
@@ -188,7 +133,7 @@ export default function SignUpForm() {
         className="text-white w-full flex justify-center mt-4 -mb-6 items-center"
         variant="link"
       >
-        <Link href="login">Already have an account? Login.</Link>
+        <Link href="signup">Dont have an account? Signup.</Link>
       </Button>
     </Card>
   );

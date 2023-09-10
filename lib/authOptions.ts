@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, getServerSession } from "next-auth";
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -7,6 +7,7 @@ import GitHubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./prismadb";
 import { compare } from "bcrypt";
+import { Session } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -15,7 +16,7 @@ export const authOptions: NextAuthOptions = {
     strategy:"jwt"
   },
   pages: {
-    signIn: "/login",
+    signIn: "/signin",
   },
   providers: [
     CredentialsProvider({
@@ -84,3 +85,6 @@ export const authOptions: NextAuthOptions = {
     },
   }
 };
+
+export const getAuthSession = () =>
+  getServerSession(authOptions) as Promise<Session | undefined | null>;

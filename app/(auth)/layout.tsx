@@ -1,19 +1,31 @@
-import Navbar from "@/components/app_components/Navbar"
-import { Toaster } from "@/components/ui/toaster"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import { getAuthSession } from "@/lib/authOptions";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ReactNode } from "react";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode;
 }) {
+  const session = await getAuthSession();
+  if (session) redirect("/dashboard");
+
   return (
-    <>
-    <main>
-        <Navbar />
-        {children}
-        <Toaster />
-      </main>
-    </>
-  )
+    <div className="h-screen flex justify-center items-center bg-black"
+    style={{backgroundImage: "url(/assets/docs-right.svg)", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "left"}}
+    >
+      <div className="m-4 md:m-6 absolute top-0 left-0 text-white">
+        <Link href="/">
+          <Button variant="ghost">
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </Link>
+      </div>
+      {children}
+    </div>
+  );
 }

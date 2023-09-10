@@ -1,6 +1,10 @@
 // app/chat.tsx -- client component
 'use client';
 
+import { BotAvatar } from '@/components/app_components/avatars/BotAvatar';
+import { UserAvatar } from '@/components/app_components/avatars/UserAvatar';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useChat } from 'ai/react';
 
 export default function MyComponent() {
@@ -9,37 +13,42 @@ export default function MyComponent() {
   });
 
   return (
-    <div className="p-4"> {/* Add padding */}
-      <ul>
-        {messages.map((m, index) => (
-          <li
-            key={index}
-            className={`${
-              m.role === 'user' ? 'text-blue-500' : 'text-green-500'
-            } mb-2`}
-          > {/* Add text color and margin bottom */}
-            {m.role === 'user' ? 'User: ' : 'AI: '}
-            {m.content}
-          </li>
-        ))}
-      </ul>
+    <div className='w-3/5 mx-auto text-black'>
+      <div className="flex flex-col gap-y-4 mb-52 mt-10">
+            {messages.map((message) => (
+              <div
+                key={message.content}
+                className={cn(
+                  "w-full flex",
+                  message.role === "user" ? "justify-end" : "justify-start"
+                )}
+              >
+                <div className="flex items-center gap-x-8 border border-black/20 rounded-xl pl-4 p-4">
+                  {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                  <p className="text-md">{message.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      <form onSubmit={handleSubmit} className="mt-4"> {/* Add margin top */}
-        <label className="block text-gray-700"> {/* Add label styles */}
-          Say something...
-          <input
-            value={input}
-            onChange={handleInputChange}
-            className="border rounded-md px-2 py-1 mt-1 focus:outline-none focus:ring focus:border-blue-500 w-full"
-          /> {/* Add input styles */}
-        </label>
-        <button
-          type="submit"
-          className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
-        > {/* Add button styles */}
-          Send
-        </button>
+      <div className="fixed inset-x-0 bottom-0 p-4 bg-background border-t shadow-sm">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-row gap-2 max-w-xl mx-auto border rounded-lg p-4 ring-offset-background focus-within:ring-2 ring-offset-2 ring-ring"
+      >
+        <textarea
+          className="resize-none flex-1 overflow-hidden text-sm text-black font-medium focus:outline-none"
+          onChange={handleInputChange}
+          value={input}
+          spellCheck
+          rows={2}
+          placeholder="Send a message..."
+        />
+          <Button type="submit" >
+            Send{" "}
+          </Button>
       </form>
+    </div>
     </div>
   );
 }

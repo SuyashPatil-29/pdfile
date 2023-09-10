@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { signIn } from "next-auth/react";
 
 interface UseGoogleButtonProps {
@@ -7,7 +7,7 @@ interface UseGoogleButtonProps {
 }
 
 const logInWithGoogle = () => {
-  signIn("google", { callbackUrl: "http://localhost:3000/home" });
+  signIn("google", { callbackUrl: "http://localhost:3000/dashboard" });
 }
 
 const UseGoogleButton = ({ children }: UseGoogleButtonProps) => {

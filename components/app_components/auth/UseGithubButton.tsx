@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { signIn } from "next-auth/react";
 
 interface UseGithubButtonProps {
@@ -7,7 +7,7 @@ interface UseGithubButtonProps {
 }
 
 const logInWithGithub = () =>{
-  signIn("github", { callbackUrl: "http://localhost:3000/home" });
+  signIn("github", { callbackUrl: "http://localhost:3000/dashboard" });
 }
 
 
