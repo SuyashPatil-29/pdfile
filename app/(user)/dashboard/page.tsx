@@ -72,6 +72,10 @@ function HomePage() {
 
   console.log(user);
   
+
+  if(!isLoading && !user) {
+    redirect("/login")
+  }
   
   return (
     <div className='h-full w-full'>

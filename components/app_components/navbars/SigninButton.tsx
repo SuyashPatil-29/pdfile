@@ -16,10 +16,10 @@ export function SigninButton() {
         <>
           {session ? (
             <Link href="/dashboard">
-              <Button variant="secondary">Dashboard</Button>
+              <Button variant="secondary" className="rounded-xl">Dashboard</Button>
             </Link>
           ) : (
-            <Button variant="secondary" onClick={() => signIn()}>
+            <Button variant="secondary"  className="rounded-xl" onClick={() => signIn()}>
               Sign In
             </Button>
           )}
