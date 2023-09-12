@@ -1,30 +1,60 @@
-// app/api/chat/route.ts
- 
-import OpenAI from 'openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
- 
-// Optional, but recommended: run on the edge runtime.
-// See https://vercel.com/docs/concepts/functions/edge-functions
-export const runtime = 'edge';
- 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+
+import { getAuthSession } from "@/lib/authOptions";
+import { db } from "@/lib/prismadb";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const session = await getAuthSession();
+
+  if (!session)
+    return NextResponse.json({ error: "Unauthroized request", status: 401 });
+
+  const { title, description, source } = (await req.json()) as {
+    title?: string;
+    description?: string;
+    source?: string;
+  };
+
+  if (!title || !description || !source)
+    return NextResponse.json({
+      error: "Invalid request, incorrect payload",
+      status: 400,
+    });
+
+//   const isLimitExceeded = await limitExceeded(session);
+//   if (isLimitExceeded)
+//     return NextResponse.json({ error: "Limit exceeded", status: 401 });
+
+const newTutor = await db.tutor.create({
+  data: {
+    title,
+    description,
+    source,
+    email: session.user.email,
+  },
 });
- 
-export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
- 
-  // Request the OpenAI API for the response based on the prompt
-  const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    stream: true,
-    messages: messages,
+
+  await db.generation.create({
+    data: {
+      userId: session.user.id,
+      type: "tutor",
+    },
   });
- 
-  // Convert the response into a friendly text-stream
-  const stream = OpenAIStream(response);
- 
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+
+  return NextResponse.json(newTutor);
+}
+
+export async function GET(req: NextRequest) {
+  const session = await getAuthSession();
+
+  if (!session)
+    return NextResponse.json({ error: "Unauthenticated request", status: 401 });
+
+  try {
+    const tutors = await db.tutor.findMany(); // Use findMany to retrieve all tutors
+    return NextResponse.json(tutors);
+  } catch (error) {
+    console.error("Error fetching tutors:", error);
+    return NextResponse.json({ error: "An error occurred while fetching tutors", status: 500 });
+  }
 }

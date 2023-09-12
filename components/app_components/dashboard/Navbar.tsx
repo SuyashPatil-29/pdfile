@@ -9,17 +9,17 @@ import { UserDropdown } from "./Userdropdown";
 
 export default function Navbar() {
   return (
-    <header className="h-14 border-b z-50 sticky shrink-0 flex items-center justify-between px-6 md:px-10 top-0 left-0 shadow-sm bg-background">
+    <header className=" h-20 border-b z-50 sticky shrink-0 flex items-center justify-between px-6 md:px-10 top-0 left-0 shadow-sm bg-background">
       <Sidebar />
       <div className="hidden md:flex items-center space-x-10">
         <Link href="/dashboard" className="flex items-center">
           <GraduationCap className="h-6 w-6 mr-2.5" />
-          <h1 className="font-semibold">{siteConfig.name}</h1>
+          <h1 className="font-semibold text-xl">{siteConfig.name}</h1>
         </Link>
-        <div className="flex items-center space-x-6 text-sm font-medium">
+        <div className="flex items-center space-x-8 text-sm font-medium">
           <HeaderLink href="/dashboard">Dashboard</HeaderLink>
           <HeaderLink href="/flashcard-sets">Code Generator</HeaderLink>
-          <HeaderLink href="/chat">AI Tutors</HeaderLink>
+          <HeaderLink href="/chat">File Chat</HeaderLink>
         </div>
       </div>
 

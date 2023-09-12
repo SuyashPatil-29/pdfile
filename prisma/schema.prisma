@@ -77,13 +77,11 @@ model User {
 }
 
 model Generation {
-  id             String   @id @default(cuid())
-  type           String
-  date           DateTime @default(now())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  codeGenerator  CodeGenerator @relation(fields: [codeGeneratorId], references: [id])
-  codeGeneratorId String
+  id     String   @id @default(cuid())
+  type   String
+  date   DateTime @default(now())
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
 
 model Tutor {
@@ -91,11 +89,12 @@ model Tutor {
   title       String
   description String
   source      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
+  email       String
+  user        User      @relation(fields: [email], references: [email], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   messages    Message[]
 }
+
 
 model Message {
   id      String @id @default(cuid())
@@ -117,7 +116,6 @@ model CodeGenerator {
   userId      String
   createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  generations Generation[]
   messages    CodeGeneratorMessage[]
 }
 
