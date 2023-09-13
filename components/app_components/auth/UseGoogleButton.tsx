@@ -12,7 +12,7 @@ const logInWithGoogle = () => {
 
 const UseGoogleButton = ({ children }: UseGoogleButtonProps) => {
   return (
-    <Button variant="outline" onClick={logInWithGoogle} className="w-full">
+    <Button variant="outline" onClick={logInWithGoogle} className="w-full bg-slate-900 text-white">
       <svg role="img" viewBox="0 0 24 24" className="mr-2 h-6 w-6">
         <path
           fill="currentColor"

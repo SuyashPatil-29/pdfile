@@ -4,13 +4,50 @@
 import { BotAvatar } from '@/components/app_components/avatars/BotAvatar';
 import { UserAvatar } from '@/components/app_components/avatars/UserAvatar';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { ToastAction } from '@radix-ui/react-toast';
 import { useChat } from 'ai/react';
+import { redirect, useParams, useRouter } from 'next/navigation';
+import { useQuery } from 'react-query';
 
 export default function MyComponent() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: '/api/chat/[id]',
   });
+
+  const router = useRouter()
+  const params = useParams()
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: async (): Promise<any> => {
+      const res = await fetch("/api/validate");
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      return data;
+    },
+    onError: () => {
+      toast({
+        title: "Uh oh, something went wrong!",
+        description: <p>There was an error loading the dashboard.</p>,
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Try again" onClick={() => router.refresh()}>
+            Try again
+          </ToastAction>
+        ),
+      });
+    },
+  });
+
+  const isValid = user?.tutors.some((tutor: any) => tutor.id === params.id); // Use .some() to check if params.id is in the array
+  
+  if (!isValid) {
+    redirect("/chat"); // Redirect the user to "/chat"
+  }  
 
   return (
     <div className='w-3/5 mx-auto text-black'>

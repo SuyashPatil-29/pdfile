@@ -14,12 +14,10 @@ export default async function AuthLayout({
   if (session) redirect("/dashboard");
 
   return (
-    <div className="h-screen flex justify-center items-center bg-black"
-    style={{backgroundImage: "url(/assets/docs-right.svg)", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "left"}}
-    >
-      <div className="m-4 md:m-6 absolute top-0 left-0 text-white">
+    <div className="h-screen flex justify-center items-center">
+      <div className="m-4 md:m-6 absolute top-0 left-0">
         <Link href="/">
-          <Button variant="ghost">
+          <Button className="bg-black text-white rounded-lg hover:bg-white hover:text-black transition-all duration-100 ease-in-out">
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Button>

@@ -31,7 +31,7 @@ export function UserDropdown() {
         <Avatar className="!h-7 !w-7">
           <AvatarImage src={session?.user.image || ""} />
           <AvatarFallback>
-            {session?.user.name? session?.user.name.charAt(0).toUpperCase() : session?.user.username.charAt(0).toUpperCase() }
+            S
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

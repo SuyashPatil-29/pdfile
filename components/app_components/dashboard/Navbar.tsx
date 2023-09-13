@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Instagram } from "lucide-react";
 import { FaDiscord } from "react-icons/fa6";
 import { Sidebar } from "./Sidebar";
 import { siteConfig } from "@/config/site";
@@ -24,9 +24,9 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center">
-        <a href="https://discord.gg/rCGEZwWUPt" className="mr-3">
+        <a href="https://www.instagram.com/_suyashpatil_/" className="mr-3">
           <Button variant="ghost" size="icon">
-            <FaDiscord className="h-5 w-5" />
+            <Instagram className="h-5 w-5" />
           </Button>
         </a>
         <UserDropdown />

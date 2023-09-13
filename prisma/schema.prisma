@@ -60,10 +60,6 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  username      String?   @unique
-  password      String?
-  createdAt     DateTime  @default(now())
-  updateAt      DateTime  @updatedAt
   sessions      Session[]
 
   generations Generation[]
@@ -76,23 +72,23 @@ model User {
   codeGeneratorMessages CodeGeneratorMessage[]
 }
 
+model Tutor {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  source      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    
+  createdAt   DateTime  @default(now())
+  messages    Message[]
+}
+
 model Generation {
   id     String   @id @default(cuid())
   type   String
   date   DateTime @default(now())
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-}
-
-model Tutor {
-  id          String    @id @default(cuid())
-  title       String
-  description String
-  source      String
-  email       String
-  user        User      @relation(fields: [email], references: [email], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  messages    Message[]
 }
 
 

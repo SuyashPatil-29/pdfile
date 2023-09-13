@@ -1,10 +1,10 @@
 "use client";
 import { useForm,Form ,Controller } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Tutor } from "@prisma/client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -35,6 +35,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Tutor } from "@prisma/client";
 
 const formSchema = z.object({
   title: z
@@ -73,9 +74,19 @@ export default function TutorsPage() {
       },
       body: JSON.stringify(data),
     });
+
+    console.log(response);
+    
   
     if (response.ok) {
-      router.push("/dashboard");
+      const responseData = await response.json();
+      const lastTutorId = responseData.id; // Assuming the API response contains the ID of the newly created tutor
+      toast({
+        title: "Success",
+        description: "Module Created Successfully!",
+        variant: "default",
+      });
+      router.push(`/chat/${lastTutorId}`);
     } else {
       try {
         const responseData = await response.json();
@@ -153,9 +164,9 @@ export default function TutorsPage() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>Create Tutor</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you are done.
+                Enter tutor details below.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -210,7 +221,7 @@ export default function TutorsPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit">Create Tutor</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -234,7 +245,7 @@ export default function TutorsPage() {
                     key={tutor.id}
                     title={tutor.title}
                     description={tutor.description}
-                    link={`/tutors/${tutor.id}`}
+                    link={`/chat/${tutor.id}`}
                     itemType="Tutor"
                     date={new Date(tutor.createdAt)}
                   />
