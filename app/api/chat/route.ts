@@ -46,15 +46,11 @@ export async function GET(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthorized request", status: 401 });
 
-  console.log(session.user.id);
-
   const tutors = await db.tutor.findMany({
     where: {
       userId: session.user.id,
     },
   });
-
-  console.log(tutors);
 
   return NextResponse.json(tutors);
 }

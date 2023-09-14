@@ -8,17 +8,21 @@ export async function GET(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthenticated request", status: 401 });
 
-    const user = await db.user.findUnique({
-      where: {
-        id: session.user.id,
+  const user = await db.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    include: {
+      tutors: {
+        include: {
+          messages: true,
+        },
       },
-      include: {
-        tutors: true,
-        generations : true,
-        codeGenerators : true,
-      }
-    });
-  
+      generations: true,
+      codeGenerators: true,
+      messages: true,
+    },
+  });
 
   return NextResponse.json(user);
 }

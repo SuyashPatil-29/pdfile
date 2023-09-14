@@ -49,7 +49,6 @@ const formSchema = z.object({
   source: z
     .string()
     .min(5, { message: "Your source must be at least 5 characters." })
-    .max(200, { message: "Your source must be less than 200 characters." }),
 });
 
 export default function TutorsPage() {
@@ -74,9 +73,6 @@ export default function TutorsPage() {
       },
       body: JSON.stringify(data),
     });
-
-    console.log(response);
-    
   
     if (response.ok) {
       const responseData = await response.json();
@@ -233,23 +229,28 @@ export default function TutorsPage() {
         ) : tutors ? (
           tutors.length === 0 || tutors.length === undefined ? (
             <EmptyAlert />
-
           ) : (
             <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-3">
-              {tutors
-                .filter((tutor) =>
-                  tutor.title.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((tutor) => (
-                  <ListCard
-                    key={tutor.id}
-                    title={tutor.title}
-                    description={tutor.description}
-                    link={`/chat/${tutor.id}`}
-                    itemType="Tutor"
-                    date={new Date(tutor.createdAt)}
-                  />
-                ))}
+              {tutors.filter((tutor) =>
+                tutor.title.toLowerCase().includes(search.toLowerCase()),
+              ).length !== 0 ? (
+                tutors
+                  .filter((tutor) =>
+                    tutor.title.toLowerCase().includes(search.toLowerCase()),
+                  )
+                  .map((tutor) => (
+                    <ListCard
+                      key={tutor.id}
+                      title={tutor.title}
+                      description={tutor.description}
+                      link={`/chat/${tutor.id}`}
+                      itemType="Tutor"
+                      date={new Date(tutor.createdAt)}
+                    />
+                  ))
+              ) : (
+                <SearchAlert />
+              )}
             </div>
           )
         ) : (

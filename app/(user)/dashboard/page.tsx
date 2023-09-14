@@ -68,8 +68,6 @@ function HomePage() {
     },
   });
 
-  console.log(user);
-
   function CreatedAt({ createdAt }: { createdAt: string }) {
     return (
       <div className="font-semibold text-[0.7rem] bg-primary text-background px-2 py-1.5 rounded-[0.5rem] w-fit">
