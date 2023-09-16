@@ -18,7 +18,7 @@ export function ListCard({
   title: string;
   description?: string;
   link: string;
-  itemType: "Quiz" | "Flashcards" | "Tutor";
+  itemType: "CodeGenerator" | "Flashcards" | "Tutor";
   date: Date;
 }) {
   return (

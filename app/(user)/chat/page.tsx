@@ -210,6 +210,7 @@ export default function TutorsPage() {
                       <Input
                         id="source"
                         className="col-span-3"
+                        type="file"
                         {...field}
                       />
                     )}

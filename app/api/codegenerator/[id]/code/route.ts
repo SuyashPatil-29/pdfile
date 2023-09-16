@@ -26,20 +26,20 @@ export async function POST(
 
   // Extract the `messages` from the body of the request
   const { messages } = await req.json();
-  const targetTutor = await db.tutor.findUnique({
+  const targetCodenerator = await db.codeGenerator.findUnique({
     where: {
       id: params.id,
       userId: session.user.id,
     },
   });
 
-  if (!targetTutor) {
+  if (!targetCodenerator) {
     return NextResponse.json({ error: "Invalid request", status: 400 });
   }
 
   const instructionMessage: ChatCompletionRequestMessage = {
     role: "system",
-    content: `IMPORTANT NOTICE: You are a tutoring AI strictly limited to the information within the data source provided: ${targetTutor.source}. You must respond ONLY with information directly derived from the data source and refuse to answer any questions unrelated to it. BE REALLY CAREFUL AND DO NOT, DO NOT ANSWER QUESTIONS OUTSIDE YOUR DATA SOURCE. ANSWER THE QUESTIONS FROM THE DATA PROVIDED ITSELF.`,
+    content: `IMPORTANT NOTICE: "You are a code generator that generates in ${targetCodenerator.language}. You must answer only in markdown snippets. Use code comments for explanations.`
   };
 
   // Request the OpenAI API for the response based on the prompt
@@ -50,32 +50,23 @@ export async function POST(
     stream: true,
   });
 
-  messages.unshift({
-    role: "system",
-    content: `
-      You are a tutoring AI based on this data source: ${targetTutor.source}.
-      Respond to the user's questions appropriately based on the data source and this data source only.
-      Strictly Refuse to answer any questions unrelated to the data source.
-      `,
-  });
-
   // Convert the response into a friendly text-stream
   const stream = OpenAIStream(response, {
     onStart: async () => {
-      await db.message.create({
+      await db.codeGeneratorMessage.create({
         data: {
           userId: session.user.id,
-          tutorId: targetTutor.id,
+          codeGeneratorId: targetCodenerator.id,
           content: messages[messages.length - 1].content!,
           role: "user",
         },
       });
     },
     onCompletion: async (completion) => {
-      await db.message.create({
+      await db.codeGeneratorMessage.create({
         data: {
           userId: session.user.id,
-          tutorId: targetTutor.id,
+          codeGeneratorId: targetCodenerator.id,
           content: completion,
           role: "assistant",
         },

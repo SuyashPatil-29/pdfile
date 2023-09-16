@@ -10,8 +10,8 @@ import { ToastAction } from "@radix-ui/react-toast";
 import { useChat } from "ai/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import ReactMarkdown from "react-markdown";
 import { useQuery } from "react-query";
+import ReactMarkdown from 'react-markdown'
 
 export default function MyComponent({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function MyComponent({ params }: { params: { id: string } }) {
     setMessages,
     handleSubmit,
   } = useChat({
-    api: `/api/chat/${params.id}/tutor`,
+    api: `/api/codegenerator/${params.id}/code`,
     onError: (error) => {
       toast({
         title: "Uh oh something went wrong!",
@@ -32,10 +32,10 @@ export default function MyComponent({ params }: { params: { id: string } }) {
     },
   });
 
-  const { data: tutors, isLoading } = useQuery({
-    queryKey: ["tutors", { id: params.id }],
+  const { data: codeGenerators, isLoading } = useQuery({
+    queryKey: ["codeGenerators", { id: params.id }],
     queryFn: async (): Promise<any> => {
-      const res = await fetch(`/api/chat/${params.id}`);
+      const res = await fetch(`/api/codegenerator/${params.id}`);
       if (!res.ok) {
         throw new Error("Network response was not ok");
       }
@@ -66,12 +66,6 @@ export default function MyComponent({ params }: { params: { id: string } }) {
     },
   });
 
-  // const isValid = tutors && tutors.length > 0 && tutors.some((tutor: any) => tutor.id === params.id);
-
-  // if (!isValid) {
-  //   redirect("/chat"); // Redirect the user to "/chat"
-  // }
-
   return (
     <div className="w-3/5 mx-auto text-black">
       {isLoading ? (
@@ -79,7 +73,7 @@ export default function MyComponent({ params }: { params: { id: string } }) {
           <Loader2 className="animate-spin" />
         </div>
       ) : (
-        tutors && (
+        codeGenerators && (
           <>
             <div className="flex flex-col gap-y-4 mb-52 mt-10">
               {messages.map((message) => (

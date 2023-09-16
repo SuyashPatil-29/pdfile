@@ -18,8 +18,8 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center space-x-8 text-sm font-medium">
           <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-          <HeaderLink href="/flashcard-sets">Code Generator</HeaderLink>
           <HeaderLink href="/chat">File Chat</HeaderLink>
+          <HeaderLink href="/codegenerator">Code Generator</HeaderLink>
         </div>
       </div>
 

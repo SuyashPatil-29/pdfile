@@ -31,7 +31,7 @@ const cards = [
     title: "Code Generator",
     icon: <Code className="h-4 w-4 mr-2" />,
     description: "Generate code with just simple prompts in any language",
-    href: "/quizzes",
+    href: "/codegenerator",
   },
   {
     title: "Talk to a book",
