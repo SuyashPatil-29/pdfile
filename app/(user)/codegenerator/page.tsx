@@ -125,9 +125,9 @@ export default function SelectForm() {
   return (
     <div className="flex-1 px-4 py-10 md:py-16 max-w-5xl xl:max-w-6xl mx-auto w-full flex flex-col">
       <div className="flex flex-col space-y-1">
-        <h1 className="text-3xl font-bold">File Chat</h1>
+        <h1 className="text-3xl font-bold">Code Generator</h1>
         <p className="text-muted-foreground font-medium">
-          Create and manage your Files.
+          Select a language and start creating your AI code generator.
         </p>
       </div>
       <div className="flex items-center space-x-2 mt-4">

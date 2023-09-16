@@ -137,10 +137,10 @@ function HomePage() {
                 ) : (
                   <ul className="flex flex-col space-y-2 text-muted-foreground">
                     <li>
-                      <Link href="/flashcard-sets">
+                      <Link href="/codegenerators">
                         {
                           user.generations.filter(
-                            (generation: any) => generation.type == "code"
+                            (generation: any) => generation.type == "code-generator"
                           ).length
                         }{" "}
                         Code Generators
