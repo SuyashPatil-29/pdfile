@@ -39,7 +39,7 @@ export async function POST(
 
   const instructionMessage: ChatCompletionRequestMessage = {
     role: "system",
-    content: `IMPORTANT NOTICE: You are a tutoring AI strictly limited to the information within the data source provided: ${targetTutor.source}. You must respond ONLY with information directly derived from the data source and refuse to answer any questions unrelated to it. BE REALLY CAREFUL AND DO NOT, DO NOT ANSWER QUESTIONS OUTSIDE YOUR DATA SOURCE. ANSWER THE QUESTIONS FROM THE DATA PROVIDED ITSELF.`,
+    content: `IMPORTANT NOTICE: You are a tutoring AI strictly limited to the information within the data source provided: ${targetTutor.source} whos content you have access to. You must respond ONLY with information directly derived from the data source and refuse to answer any questions unrelated to it. BE REALLY CAREFUL AND DO NOT, DO NOT ANSWER QUESTIONS OUTSIDE YOUR DATA SOURCE. ANSWER THE QUESTIONS FROM THE DATA PROVIDED ITSELF.`,
   };
 
   // Request the OpenAI API for the response based on the prompt
@@ -52,11 +52,7 @@ export async function POST(
 
   messages.unshift({
     role: "system",
-    content: `
-      You are a tutoring AI based on this data source: ${targetTutor.source}.
-      Respond to the user's questions appropriately based on the data source and this data source only.
-      Strictly Refuse to answer any questions unrelated to the data source.
-      `,
+    content: `IMPORTANT NOTICE: You are a tutoring AI strictly limited to the information within the data source provided: ${targetTutor.source} whos content you have access to. You must respond ONLY with information directly derived from the data source and refuse to answer any questions unrelated to it. BE REALLY CAREFUL AND DO NOT, DO NOT ANSWER QUESTIONS OUTSIDE YOUR DATA SOURCE. ANSWER THE QUESTIONS FROM THE DATA PROVIDED ITSELF.`,
   });
 
   // Convert the response into a friendly text-stream

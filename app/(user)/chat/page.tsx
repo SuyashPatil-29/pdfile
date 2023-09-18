@@ -1,118 +1,30 @@
 "use client";
-import { useForm,Form ,Controller } from "react-hook-form";
-import { redirect, useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
+import { useForm,Form ,Controller } from "react-hook-form";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorAlert } from "@/components/app_components/alerts/ErrorAlert";
 import { SearchAlert } from "@/components/app_components/alerts/SearchAlert";
 import { EmptyAlert } from "@/components/app_components/alerts/EmptyAlert";
 import { ListCard } from "@/components/app_components/cards/ListCard";
 import { LoadingCards } from "@/components/app_components/cards/LoadingCard";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Tutor } from "@prisma/client";
 
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(5, { message: "Your title must be at least 5 characters." })
-    .max(50, { message: "Your title must be less than 50 characters." }),
-  description: z
-    .string()
-    .min(5, { message: "Your description must be at least 5 characters." })
-    .max(200, { message: "Your title must be less than 200 characters." }),
-  source: z
-    .string()
-    .min(5, { message: "Your source must be at least 5 characters." })
-});
+
+import { Tutor } from "@prisma/client";
+import FileUpload from "@/components/app_components/chat/FileUpload";
+
 
 export default function TutorsPage() {
   const router = useRouter();
 
-  const defaultValues = {
-    title: "",
-    description: "",
-    source: "",
-  };
-
-  const { control, handleSubmit } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-  });
-
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (response.ok) {
-      const responseData = await response.json();
-      const lastTutorId = responseData.id; // Assuming the API response contains the ID of the newly created tutor
-      toast({
-        title: "Success",
-        description: "Module Created Successfully!",
-        variant: "default",
-      });
-      router.push(`/chat/${lastTutorId}`);
-    } else {
-      try {
-        const responseData = await response.json();
-        const errorMessage = responseData.error;
-  
-        toast({
-          title: "Error!",
-          description: errorMessage,
-          variant: "destructive",
-          action: (
-            <ToastAction altText="Login">
-              <Link href="/signin">Login</Link>
-            </ToastAction>
-          ),
-        });
-      } catch (error) {
-        // Handle the case where the response is not valid JSON
-        toast({
-          title: "Error!",
-          description: "An unexpected error occurred.",
-          variant: "destructive",
-          action: (
-            <ToastAction altText="Login">
-              <Link href="/signin">Login</Link>
-            </ToastAction>
-          ),
-        });
-      }
-    }
-  };
   const [search, setSearch] = useState("");
 
   const { data: tutors, isLoading: tutorsLoading } = useQuery({
@@ -154,75 +66,7 @@ export default function TutorsPage() {
           value={search}
           placeholder="Search Files"
         />
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="bg-black text-white w-[200px]">Add New</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create Tutor</DialogTitle>
-              <DialogDescription>
-                Enter tutor details below.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="title" className="text-right">
-                    Title
-                  </Label>
-                  <Controller
-                    name="title"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="title"
-                        className="col-span-3"
-                        {...field}
-                      />
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
-                  </Label>
-                  <Controller
-                    name="description"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="description"
-                        className="col-span-3"
-                        {...field}
-                      />
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="source" className="text-right">
-                    Source
-                  </Label>
-                  <Controller
-                    name="source"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="source"
-                        className="col-span-3"
-                        type="file"
-                        {...field}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Create Tutor</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <FileUpload />
       </div>
       <div className="mt-6">
         {tutorsLoading ? (
