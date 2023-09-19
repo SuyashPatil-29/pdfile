@@ -29,6 +29,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/supabase/client";
+import getDownloadedFiles from "./getDownloadedFiles";
+import { reduceText } from "@/lib/reduce-text";
 
 const formSchema = z.object({
   title: z
@@ -44,6 +46,8 @@ const formSchema = z.object({
 
 const FileUpload = () => {
   const [fileSource, setFileSource] = useState<string | null>(null);
+  const [downloadPath, setDownloadPath] = useState("")
+  const [text, setText] = useState("");
 
   const defaultValues = {
     title: "",
@@ -74,14 +78,12 @@ const FileUpload = () => {
         console.log(error);
         // Update the form's source field with the accepted file
       } else {
-        console.log(data);
         const filename = data.path; // Replace this with your actual filename
         const sanitizedFilename = filename.replace(/ /g, "%20");
         const url = `https://vgfimzfmtiyzwprpdsqq.supabase.co/storage/v1/object/public/pdfile-uploads/${sanitizedFilename}`;
         setValue("source", url);
-        // Set the file source for display
         setFileSource(url);
-        // Handle success
+        setDownloadPath(filename)
       }
     },
   });
@@ -90,7 +92,20 @@ const FileUpload = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     
-    data.source = fileSource;
+    const downloadedFile = await getDownloadedFiles(downloadPath);
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      const newText = event.target!.result as ArrayBuffer;
+      const textDecoder = new TextDecoder("utf-8");
+      const decodedText = textDecoder.decode(newText);
+      const reducedText = reduceText(decodedText)
+      data.source = reducedText;
+    };
+    
+    reader.readAsArrayBuffer(downloadedFile as Blob);
+    
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {

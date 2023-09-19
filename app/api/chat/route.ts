@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     description: string;
     source: string;
   }
-  if (!title || !description || !source)
+  if (!title || !description )
     return NextResponse.json({
       error: "Invalid request, incorrect payload",
       status: 400,

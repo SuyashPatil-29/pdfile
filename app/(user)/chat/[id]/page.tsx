@@ -42,16 +42,16 @@ export default function MyComponent({ params }: { params: { id: string } }) {
       const data = await res.json();
       return data;
     },
-    onSuccess: (data) => {
-      if (data.messages.length) {
-        const initMessages = data.messages.map((message: any) => ({
-          id: message.id,
-          role: message.role as "assistant" | "system" | "user" | "function",
-          content: message.content,
-        }));
-        setMessages(initMessages);
-      }
-    },
+    // onSuccess: (data) => {
+    //   if (data.messages.length) {
+    //     const initMessages = data.messages.map((message: any) => ({
+    //       id: message.id,
+    //       role: message.role as "assistant" | "system" | "user" | "function",
+    //       content: message.content,
+    //     }));
+    //     setMessages(initMessages);
+    //   }
+    // },
     onError: (data) => {
       toast({
         title: "Uh oh, something went wrong!",

@@ -76,7 +76,7 @@ model Tutor {
   id          String    @id @default(cuid())
   title       String
   description String
-  source      Json
+  source      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String    
   createdAt   DateTime  @default(now())
