@@ -10,11 +10,13 @@ import { ToastAction } from "@radix-ui/react-toast";
 import { useChat } from "ai/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useQuery } from "react-query";
 
 export default function MyComponent({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const [pdfUrl, setPdfUrl] = useState("")
   const {
     messages,
     input,
@@ -40,18 +42,27 @@ export default function MyComponent({ params }: { params: { id: string } }) {
         throw new Error("Network response was not ok");
       }
       const data = await res.json();
+      setPdfUrl(data.source)
       return data;
     },
-    // onSuccess: (data) => {
-    //   if (data.messages.length) {
-    //     const initMessages = data.messages.map((message: any) => ({
-    //       id: message.id,
-    //       role: message.role as "assistant" | "system" | "user" | "function",
-    //       content: message.content,
-    //     }));
-    //     setMessages(initMessages);
-    //   }
-    // },
+    onSuccess: (data) => {
+      if (data.messages.length) {
+        const initMessages = data.messages.map((message: any) => ({
+          id: message.id,
+          role: message.role as "assistant" | "system" | "user" | "function",
+          content: message.content,
+        }));
+        setMessages(initMessages);
+      }
+      else{
+        const initMessages = data.messages.map((message: any) => ({
+          id: message.id,
+          role: message.role as "assistant" | "system" | "user" | "function",
+          content: "Hello I am your AI assistant",
+        }));
+        setMessages(initMessages);
+      }
+    },
     onError: (data) => {
       toast({
         title: "Uh oh, something went wrong!",

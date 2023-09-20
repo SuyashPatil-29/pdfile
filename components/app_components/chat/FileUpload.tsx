@@ -8,7 +8,7 @@ import { unknown, z } from "zod";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
-import { Inbox } from "lucide-react";
+import { Inbox, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,19 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/supabase/client";
 import getDownloadedFiles from "./getDownloadedFiles";
 import { reduceText } from "@/lib/reduce-text";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   title: z
@@ -45,9 +39,12 @@ const formSchema = z.object({
 });
 
 const FileUpload = () => {
-  const [fileSource, setFileSource] = useState<string | null>(null);
-  const [downloadPath, setDownloadPath] = useState("")
-  const [text, setText] = useState("");
+  const { data: session } = useSession();
+  
+  const [downloadPath, setDownloadPath] = useState("");
+  const [uploading, setUploading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const defaultValues = {
     title: "",
@@ -70,28 +67,30 @@ const FileUpload = () => {
     },
     maxFiles: 1,
     onDrop: async (acceptedFile) => {
+      setIsLoading(true)
       const { data, error } = await supabase.storage
         .from("pdfile-uploads")
-        .upload(`pdfs/${acceptedFile[0].name}`, acceptedFile[0]);
+        .upload(
+          `${session?.user.email}/${acceptedFile[0].name}`,
+          acceptedFile[0]
+        );
       if (error) {
         console.error(error);
         console.log(error);
         // Update the form's source field with the accepted file
       } else {
+        setIsLoading(false)
+        setUploading(false)
         const filename = data.path; // Replace this with your actual filename
         const sanitizedFilename = filename.replace(/ /g, "%20");
         const url = `https://vgfimzfmtiyzwprpdsqq.supabase.co/storage/v1/object/public/pdfile-uploads/${sanitizedFilename}`;
         setValue("source", url);
-        setFileSource(url);
-        setDownloadPath(filename)
+        setDownloadPath(filename);
       }
     },
   });
 
-  
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    
     const downloadedFile = await getDownloadedFiles(downloadPath);
 
     const reader = new FileReader();
@@ -100,12 +99,12 @@ const FileUpload = () => {
       const newText = event.target!.result as ArrayBuffer;
       const textDecoder = new TextDecoder("utf-8");
       const decodedText = textDecoder.decode(newText);
-      const reducedText = reduceText(decodedText)
+      const reducedText = reduceText(decodedText);
       data.source = reducedText;
     };
-    
+
     reader.readAsArrayBuffer(downloadedFile as Blob);
-    
+
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -202,23 +201,28 @@ const FileUpload = () => {
                   })}
                 >
                   <Input {...getInputProps()} />
-                  <>
-                    <Inbox className="w-10 h-10 text-blue-500" />
-                    <p className="mt-2 text-sm text-slate-400">
-                      Click or drop a file to upload
-                    </p>
-                  </>
+                  { uploading && isLoading ? (
+                    <>
+                      {/* loading state */}
+                      <Loader2 className="h-10 w-10 text-blue-500 animate-spin" />
+                      <p className="mt-2 text-sm text-slate-400">
+                        Spilling Tea to GPT...
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Inbox className="w-10 h-10 text-blue-500" />
+                      <p className="mt-2 text-sm text-slate-400">
+                      {uploading && "Drop PDF Here"} {!uploading && "File uploaded successfully"}
+                      </p>
+                    </>
+                  )}
                 </div>
-                {fileSource && (
-                  <p className="mt-2 text-sm text-green-500">
-                    File uploaded successfully!
-                  </p>
-                )}
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create Tutor</Button>
+            <Button type="submit" className={`${uploading && "cursor-not-allowed"}`}>Create Tutor</Button>
           </DialogFooter>
         </form>
       </DialogContent>

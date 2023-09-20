@@ -1,4 +1,4 @@
-const maxChars = 62000;
+const maxChars = 64000;
 
 export function reduceText(text: string): string {
   console.log(text.length);

@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Tutor } from "@prisma/client";
+import { CodeGenerator, Tutor } from "@prisma/client";
 
 const cards = [
   {
@@ -67,6 +67,9 @@ function HomePage() {
       });
     },
   });
+
+  console.log("user",user);
+  
 
   function CreatedAt({ createdAt }: { createdAt: string }) {
     return (
@@ -137,7 +140,7 @@ function HomePage() {
                 ) : (
                   <ul className="flex flex-col space-y-2 text-muted-foreground">
                     <li>
-                      <Link href="/codegenerators">
+                      <Link href="/codegenerator">
                         {
                           user.generations.filter(
                             (generation: any) => generation.type == "code-generator"
@@ -226,7 +229,7 @@ function HomePage() {
                           .map((tutor: Tutor) => (
                             <Link key={tutor.id} href={`/chat/${tutor.id}`}>
                               {" "}
-                              <Card>
+                              <Card className=" border-muted-foreground/60">
                                 {" "}
                                 <CardTitle className="text-lg underline">
                                   {tutor.title}
@@ -274,7 +277,25 @@ function HomePage() {
                           ))}
                       </>
                     ) : (
-                      user && <>Code 1</>
+                      user && (
+                        <>
+                          {" "}
+                          {user.codeGenerators
+                            .slice(-1)
+                            .reverse()
+                            .map((codegenerator: CodeGenerator) => (
+                              <Link key={codegenerator.id} href={`/chat/${codegenerator.id}`}>
+                                {" "}
+                                <Card className=" border-muted-foreground/60">
+                                  {" "}
+                                  <CardTitle className="text-lg underline">
+                                    {codegenerator.language}
+                                  </CardTitle>{" "}
+                                </Card>{" "}
+                              </Link>
+                            ))}{" "}
+                        </>
+                      )
                     )}
                   </div>
                 </CardContent>

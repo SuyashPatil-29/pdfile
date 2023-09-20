@@ -28,14 +28,11 @@ export function Sidebar() {
           <HeaderLink onClick={() => setSidebar(false)} href="/dashboard">
             Dashboard
           </HeaderLink>
-          <HeaderLink onClick={() => setSidebar(false)} href="/flashcard-sets">
-            Flashcards
+          <HeaderLink onClick={() => setSidebar(false)} href="/chat">
+            File Chat
           </HeaderLink>
-          <HeaderLink onClick={() => setSidebar(false)} href="/tutors">
-            AI Tutors
-          </HeaderLink>
-          <HeaderLink onClick={() => setSidebar(false)} href="/quizes">
-            Quizes
+          <HeaderLink onClick={() => setSidebar(false)} href="/codegenerator">
+            Code Generator
           </HeaderLink>
         </div>
       </SheetContent>
